@@ -6,13 +6,15 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const paths = [
+  "src/background/background.ts",
+  "src/content/content.ts",
+  "src/popup/popup.tsx",
+  "src/options/options.tsx"
+];
+
 export const buildOptions: BuildOptions = {
-  entryPoints: [
-    resolve(__dirname, "src/background/background.ts"),
-    resolve(__dirname, "src/content/content.ts"),
-    resolve(__dirname, "src/popup/popup.tsx"),
-    resolve(__dirname, "src/options/options.tsx")
-  ],
+  entryPoints: paths.map(path => resolve(__dirname, path)),
   bundle: true,
   outdir: "dist",
   platform: "browser",

@@ -40,10 +40,29 @@ async function runBuild() {
     // Build the TypeScript files
     await build(buildOptions);
 
-    // Copy static files from public
-    await copy(PUBLIC_DIR, DIST_DIR, {
-      overwrite: true
-    });
+    // Copy and rename manifest based on target browser
+    const targetBrowser = process.env.TARGET_BROWSER ?? "chrome";
+    console.log(`Building for ${targetBrowser}...`);
+
+    const manifestSource = join(PUBLIC_DIR, `manifest.${targetBrowser}.json`);
+    const manifestDest = join(DIST_DIR, "manifest.json");
+
+    try {
+      await copy(manifestSource, manifestDest, { overwrite: true });
+      console.log(`Copied manifest for ${targetBrowser}`);
+    } catch (error) {
+      console.error(`Error copying manifest: ${error}`);
+      throw error;
+    }
+
+    // Copy other static files from public (excluding manifest files)
+    const files = await readdir(PUBLIC_DIR, { withFileTypes: true });
+    for (const file of files) {
+      if (file.name.startsWith("manifest.")) continue;
+      const srcPath = join(PUBLIC_DIR, file.name);
+      const destPath = join(DIST_DIR, file.name);
+      await copy(srcPath, destPath);
+    }
 
     // Copy HTML and CSS files from src to dist
     await Promise.all([

@@ -1,9 +1,4 @@
-// Content script implementation
-console.log("Content script loaded");
-
-// Add your content script logic here
-document.addEventListener("DOMContentLoaded", () => {
-  // Your content script initialization code
-});
+// Apply red border to the page
+document.documentElement.style.border = "2px solid red";
 
 export {};
