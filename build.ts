@@ -41,7 +41,7 @@ async function runBuild() {
     await build(buildOptions);
 
     // Copy and rename manifest based on target browser
-    const targetBrowser = process.env.TARGET_BROWSER ?? "chrome";
+    const targetBrowser = process.env.TARGET_BROWSER ?? "firefox";
     console.log(`Building for ${targetBrowser}...`);
 
     const manifestSource = join(PUBLIC_DIR, `manifest.${targetBrowser}.json`);
