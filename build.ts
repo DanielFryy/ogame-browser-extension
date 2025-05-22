@@ -46,7 +46,10 @@ async function runBuild() {
     });
 
     // Copy HTML and CSS files from src to dist
-    await Promise.all([copyFiles(SRC_DIR, DIST_DIR, ".html"), copyFiles(SRC_DIR, DIST_DIR, ".css")]);
+    await Promise.all([
+      copyFiles(SRC_DIR, DIST_DIR, ".html"),
+      copyFiles(SRC_DIR, DIST_DIR, ".css")
+    ]);
 
     console.log("✨ Build completed successfully!");
   } catch (error) {

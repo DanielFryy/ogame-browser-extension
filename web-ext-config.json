@@ -1,15 +1,20 @@
 {
-  "verbose": false,
+  "verbose": true,
   "sourceDir": "dist",
   "artifactsDir": "releases",
   "build": {
     "overwriteDest": true
   },
   "run": {
-    "startUrl": ["about:debugging#/runtime/this-firefox"],
+    "startUrl": ["about:debugging#/runtime/this-firefox", "about:addons"],
     "browserConsole": true,
     "firefoxProfile": "./profile",
-    "keepProfileChanges": true
+    "keepProfileChanges": true,
+    "watchFile": "dist/**/*",
+    "devtools": true,
+    "preInstall": true,
+    "chromiumProfile": "./profile-chrome",
+    "target": ["firefox-desktop", "chromium"]
   },
   "ignoreFiles": [
     "package.json",
@@ -19,6 +24,11 @@
     "node_modules",
     ".git",
     "releases",
-    "web-ext-artifacts"
-  ]
+    "web-ext-artifacts",
+    "**/*.map"
+  ],
+  "lint": {
+    "selfHosted": true,
+    "warningsAsErrors": true
+  }
 }

@@ -16,8 +16,21 @@ export const buildOptions: BuildOptions = {
   bundle: true,
   outdir: "dist",
   platform: "browser",
-  format: "esm",
+  format: "iife",
   target: "es2020",
   minify: process.env.NODE_ENV === "production",
-  sourcemap: process.env.NODE_ENV !== "production"
+  sourcemap: process.env.NODE_ENV !== "production",
+  loader: {
+    ".tsx": "tsx",
+    ".ts": "ts",
+    ".js": "js",
+    ".css": "css",
+    ".json": "json",
+    ".png": "dataurl",
+    ".svg": "dataurl"
+  },
+  define: { "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV ?? "development") },
+  treeShaking: true,
+  logLevel: "info",
+  metafile: true // Useful for bundle analysis
 };
