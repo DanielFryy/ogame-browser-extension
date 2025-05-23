@@ -4,6 +4,7 @@ import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { buildOptions } from "./esbuild.config";
+import { copyFiles } from "@/utils/build.utils";
 
 // Get directory paths
 const __filename = fileURLToPath(import.meta.url);
@@ -14,22 +15,7 @@ const SRC_DIR = resolve(__dirname, "src");
 const DIST_DIR = resolve(__dirname, "dist");
 const PUBLIC_DIR = resolve(__dirname, "public");
 
-async function copyFiles(sourceDir: string, targetDir: string, ext: string) {
-  const files = await readdir(sourceDir, { recursive: true, withFileTypes: true });
-
-  for (const file of files) {
-    if (!file.isFile() || !file.name.endsWith(ext)) continue;
-
-    const relativePath = file.parentPath?.replace(sourceDir + "/", "") ?? "";
-    const srcPath = join(file.parentPath ?? sourceDir, file.name);
-    const destPath = join(targetDir, relativePath, file.name);
-
-    await ensureDir(dirname(destPath));
-    await copy(srcPath, destPath, { overwrite: true });
-  }
-}
-
-async function runBuild() {
+const runBuild = async () => {
   try {
     // Clean dist directory
     await remove(DIST_DIR);
@@ -50,8 +36,18 @@ async function runBuild() {
     try {
       await copy(manifestSource, manifestDest, { overwrite: true });
       console.log(`Copied manifest for ${targetBrowser}`);
+
+      // Copy webextension-polyfill
+      const polyfillSource = join(
+        __dirname,
+        "node_modules/webextension-polyfill/dist/browser-polyfill.min.js"
+      );
+      const polyfillDest = join(DIST_DIR, "browser-polyfill.min.js");
+      await ensureDir(dirname(polyfillDest));
+      await copy(polyfillSource, polyfillDest, { overwrite: true });
+      console.log("Copied webextension-polyfill");
     } catch (error) {
-      console.error(`Error copying manifest: ${error}`);
+      console.error(`Error copying files: ${error}`);
       throw error;
     }
 
@@ -75,7 +71,7 @@ async function runBuild() {
     console.error("❌ Build failed:", error);
     process.exit(1);
   }
-}
+};
 
 // Execute build
 runBuild();
