@@ -20,6 +20,7 @@ export const buildOptions: BuildOptions = {
   platform: "browser",
   format: "iife",
   target: "es2020",
+  external: ["webextension-polyfill"],
   minify: process.env.NODE_ENV === "production",
   sourcemap: process.env.NODE_ENV !== "production",
   loader: {
